@@ -43,9 +43,6 @@ Capital: 100000.0
 Risk Amount: 2000.0
 Entry Price: 1500.0
 Stop Loss Price: 1470.0
-Made with ♥ by Viraj Shah
-Disclaimer: This script is for educational purposes only and does not constitute financial advice.
-
 
 ## Disclaimer
 
