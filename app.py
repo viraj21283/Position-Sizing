@@ -6,7 +6,6 @@ import streamlit as st
 
 st.set_page_config(page_title="Position Sizing Calculator", page_icon="❤️")
 
-# Disclaimer displayed at the top
 st.markdown("""
 ### Position Sizing Calculator
 
@@ -29,9 +28,13 @@ def calc_position_size(capital, risk, entry_price, stop_loss_price):
 with st.form("position_sizer_form"):
     st.subheader("Enter Your Details")
     capital = st.number_input('Total Capital', min_value=0.0, value=100000.0)
-    risk_type = st.selectbox('Risk Input Type', 
-                             ('Absolute amount (currency units)', 'Percentage of Capital', 'Percentage of Previous Profit'))
+    risk_type = st.selectbox(
+        'Risk Input Type',
+        ('Absolute amount (currency units)', 'Percentage of Capital', 'Percentage of Previous Profit')
+    )
 
+    risk = 0.0  # Default risk initialization
+    # Show only relevant risk field
     if risk_type == 'Absolute amount (currency units)':
         risk = st.number_input('Amount Willing to Risk (currency units)', min_value=0.0, value=2000.0)
     elif risk_type == 'Percentage of Capital':
@@ -63,4 +66,3 @@ if submitted:
         ❤️ *Made with love by Viraj Shah*  
         **Disclaimer:** This app is for educational purposes only and is not financial advice.
         """)
-
