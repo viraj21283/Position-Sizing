@@ -1,15 +1,15 @@
 # Streamlit Position Sizing Calculator
 
-**Made with ♥ by Viraj Shah**
+**Made with ❤️ by Viraj Shah**
 
-A Streamlit web app for quickly calculating trade position size based on your capital and risk tolerance.
+A Streamlit web app for calculating trade position size based on your capital and risk tolerance.
 
 ---
 
 ## Features
 
 - Enter total capital and risk preference:
-  - Absolute amount (currency)
+  - Absolute amount (currency units)
   - Percentage of total capital
   - Percentage of previous profit
 - Input entry price and stop loss price
@@ -38,12 +38,6 @@ A Streamlit web app for quickly calculating trade position size based on your ca
 
 ---
 
-## Example Screenshot
-
-![Streamlit Position Sizing Screenshot](screenshot.png)
-
----
-
 ## Disclaimer
 
 This app is for educational purposes only.  
@@ -51,5 +45,4 @@ It does **not** constitute financial advice. Please consult a qualified financia
 
 ---
 
-**Made with ♥ by Viraj Shah**
-
+**Made with ❤️ by Viraj Shah**
