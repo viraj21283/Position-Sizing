@@ -17,7 +17,7 @@ Made with ❤️ by **Viraj Shah**
 ---
 """)
 
-def calc_stoploss(cmp, stoploss_percent):
+def calc_stoploss_price(cmp, stoploss_percent):
     return cmp - (cmp * stoploss_percent / 100)
 
 def calc_position_size(risk_amount, cmp, stoploss_price):
@@ -38,7 +38,6 @@ calc_type = st.selectbox(
     ["Risk as % of Capital", "Risk as Absolute Value", "Portfolio Risk"]
 )
 
-# Scenario 1: Risk as % of Capital
 if calc_type == "Risk as % of Capital":
     capital = st.number_input('Total Capital', min_value=0.0, value=100000.0)
     risk_percent = st.number_input('Risk Percentage', min_value=0.0, max_value=100.0, value=5.0)
@@ -47,13 +46,12 @@ if calc_type == "Risk as % of Capital":
 
     if st.button("Calculate"):
         risk_amount = (risk_percent / 100) * capital
-        stoploss_price = calc_stoploss(cmp, stoploss_percent)
+        stoploss_price = calc_stoploss_price(cmp, stoploss_percent)
         position_size = calc_position_size(risk_amount, cmp, stoploss_price)
         st.success(f"Stoploss Price: ₹{stoploss_price:,.2f}")
         st.success(f"Position Size: {position_size} units")
         st.info(f"Risk Amount: ₹{risk_amount:,.2f}")
 
-# Scenario 2: Risk as Absolute Value
 elif calc_type == "Risk as Absolute Value":
     capital = st.number_input('Total Capital', min_value=0.0, value=100000.0)
     abs_risk = st.number_input('Absolute Risk Amount', min_value=0.0, value=2000.0)
@@ -61,13 +59,12 @@ elif calc_type == "Risk as Absolute Value":
     stoploss_percent = st.number_input('Stoploss Percentage', min_value=0.0, max_value=100.0, value=2.0)
 
     if st.button("Calculate"):
-        stoploss_price = calc_stoploss(cmp, stoploss_percent)
+        stoploss_price = calc_stoploss_price(cmp, stoploss_percent)
         position_size = calc_position_size(abs_risk, cmp, stoploss_price)
         st.success(f"Stoploss Price: ₹{stoploss_price:,.2f}")
         st.success(f"Position Size: {position_size} units")
         st.info(f"Risk Amount: ₹{abs_risk:,.2f}")
 
-# Scenario 3: Portfolio Risk
 elif calc_type == "Portfolio Risk":
     portfolio_capital = st.number_input('Portfolio Capital', min_value=0.0, value=200000.0)
     risk_percent = st.number_input('Risk Percentage on Portfolio', min_value=0.0, max_value=100.0, value=2.0)
