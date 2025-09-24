@@ -1,5 +1,5 @@
 # app.py
-# Streamlit Position Sizing Calculator
+# Position Sizing Calculator with Dynamic Scenarios
 # Made with ❤️ by Viraj Shah
 
 import streamlit as st
@@ -17,52 +17,75 @@ Made with ❤️ by **Viraj Shah**
 ---
 """)
 
-def calc_position_size(capital, risk, entry_price, stop_loss_price):
-    risk_per_unit = abs(entry_price - stop_loss_price)
-    if risk_per_unit == 0:
-        st.error("Entry Price and Stop Loss Price cannot be the same.")
-        return 0
-    position_size = risk / risk_per_unit
-    return int(position_size)
+def calculate_percentage_risk(capital, risk_percent, cmp, stoploss_percent):
+    risk_amount = (risk_percent / 100) * capital
+    stoploss_price = cmp - (cmp * stoploss_percent / 100)
+    position_size = int(risk_amount / (cmp - stoploss_price))
+    return stoploss_price, position_size, risk_amount
 
-with st.form("position_sizer_form"):
-    st.subheader("Enter Your Details")
+def calculate_absolute_risk(abs_risk, cmp, stoploss_percent):
+    stoploss_price = cmp - (cmp * stoploss_percent / 100)
+    position_size = int(abs_risk / (cmp - stoploss_price))
+    return stoploss_price, position_size
+
+def calculate_portfolio_risk(portfolio_capital, risk_percent, cmp, stoploss_percent, stocks_count):
+    risk_per_stock = (risk_percent / 100) * portfolio_capital / stocks_count
+    stoploss_price = cmp - (cmp * stoploss_percent / 100)
+    position_size_per_stock = int(risk_per_stock / (cmp - stoploss_price))
+    return stocks_count, stoploss_price, position_size_per_stock, risk_per_stock
+
+st.subheader("Select Position Sizing Scenario")
+
+scenario = st.selectbox(
+    "Calculator Type",
+    ["Risk as % of Capital", "Risk as Absolute Value", "Portfolio Risk"]
+)
+
+if scenario == "Risk as % of Capital":
     capital = st.number_input('Total Capital', min_value=0.0, value=100000.0)
-    risk_type = st.selectbox(
-        'Risk Input Type',
-        ('Absolute amount (currency units)', 'Percentage of Capital', 'Percentage of Previous Profit')
-    )
+    risk_percent = st.number_input('Risk Percentage', min_value=0.0, max_value=100.0, value=5.0)
+    cmp = st.number_input('Current Market Price (CMP)', min_value=0.0, value=1000.0)
+    stoploss_percent = st.number_input('Stoploss Percentage', min_value=0.0, max_value=100.0, value=2.0)
 
-    risk = 0.0  # Default risk initialization
-    # Show only relevant risk field
-    if risk_type == 'Absolute amount (currency units)':
-        risk = st.number_input('Amount Willing to Risk (currency units)', min_value=0.0, value=2000.0)
-    elif risk_type == 'Percentage of Capital':
-        risk_percent = st.number_input('Risk Percentage of Capital', min_value=0.0, max_value=100.0, value=2.0)
-        risk = (risk_percent / 100) * capital
-    elif risk_type == 'Percentage of Previous Profit':
-        previous_profit = st.number_input('Previous Realized Profit (currency units)', min_value=0.0, value=10000.0)
-        risk_percent = st.number_input('Risk Percentage of Previous Profit', min_value=0.0, max_value=100.0, value=50.0)
-        risk = (risk_percent / 100) * previous_profit
+    if st.button("Calculate"):
+        stoploss_price, position_size, risk_amount = calculate_percentage_risk(
+            capital, risk_percent, cmp, stoploss_percent
+        )
+        st.success(f"Stoploss Price: ₹{stoploss_price:,.2f}")
+        st.success(f"Position Size: {position_size} units")
+        st.info(f"Risk Amount: ₹{risk_amount:,.2f}")
 
-    entry_price = st.number_input('Entry Price', min_value=0.0, value=1500.0)
-    stop_loss_price = st.number_input('Stop Loss Price', min_value=0.0, value=1470.0)
+elif scenario == "Risk as Absolute Value":
+    capital = st.number_input('Total Capital', min_value=0.0, value=100000.0)
+    abs_risk = st.number_input('Absolute Risk Amount', min_value=0.0, value=2000.0)
+    cmp = st.number_input('Current Market Price (CMP)', min_value=0.0, value=1000.0)
+    stoploss_percent = st.number_input('Stoploss Percentage', min_value=0.0, max_value=100.0, value=2.0)
 
-    submitted = st.form_submit_button("Calculate Position Size")
+    if st.button("Calculate"):
+        stoploss_price, position_size = calculate_absolute_risk(
+            abs_risk, cmp, stoploss_percent
+        )
+        st.success(f"Stoploss Price: ₹{stoploss_price:,.2f}")
+        st.success(f"Position Size: {position_size} units")
 
-if submitted:
-    position_size = calc_position_size(capital, risk, entry_price, stop_loss_price)
-    if position_size > 0:
-        st.success(f'**Position Size:** {position_size} units')
-        st.info(f"""
-            **Summary:**  
-            - Capital: {capital}
-            - Risk Amount: {risk}
-            - Entry Price: {entry_price}
-            - Stop Loss Price: {stop_loss_price}
-        """)
-        st.markdown("""
-        ---
-        ❤️ *Made with love by Viraj Shah*  
-        **Disclaimer:** This app is for educational purposes only and is not financial advice.
-        """)
+elif scenario == "Portfolio Risk":
+    portfolio_capital = st.number_input('Portfolio Capital', min_value=0.0, value=200000.0)
+    risk_percent = st.number_input('Risk Percentage on Portfolio', min_value=0.0, max_value=100.0, value=2.0)
+    stocks_count = st.number_input('Number of Stocks in Portfolio', min_value=1, value=10)
+    cmp = st.number_input('Average CMP per Stock', min_value=0.0, value=1000.0)
+    stoploss_percent = st.number_input('Stoploss Percentage per Stock', min_value=0.0, max_value=100.0, value=2.0)
+
+    if st.button("Calculate Portfolio"):
+        stocks, stoploss_price, position_size, risk_per_stock = calculate_portfolio_risk(
+            portfolio_capital, risk_percent, cmp, stoploss_percent, stocks_count
+        )
+        st.success(f"Number of Stocks: {stocks}")
+        st.success(f"Stoploss Price per Stock: ₹{stoploss_price:,.2f}")
+        st.success(f"Position Size per Stock: {position_size} units")
+        st.info(f"Risk Amount per Stock: ₹{risk_per_stock:,.2f}")
+
+st.markdown("""
+---
+❤️ *Made with love by Viraj Shah*  
+**Disclaimer:** This app is for educational purposes only and is not financial advice.
+""")
