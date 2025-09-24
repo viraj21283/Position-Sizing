@@ -1,16 +1,16 @@
 # app.py
 # Streamlit Position Sizing Calculator
-# Made with ♥ by Viraj Shah
+# Made with ❤️ by Viraj Shah
 
 import streamlit as st
 
-st.set_page_config(page_title="Position Sizing Calculator", page_icon=":heart:")
+st.set_page_config(page_title="Position Sizing Calculator", page_icon="❤️")
 
 # Disclaimer displayed at the top
 st.markdown("""
 ### Position Sizing Calculator
 
-Made with :heart: by **Viraj Shah**
+Made with ❤️ by **Viraj Shah**
 
 > **Disclaimer:**  
 > This Streamlit app is for educational purposes only and does *not* constitute financial advice.  
@@ -60,6 +60,7 @@ if submitted:
         """)
         st.markdown("""
         ---
-        :heart: *Made with love by Viraj Shah*  
+        ❤️ *Made with love by Viraj Shah*  
         **Disclaimer:** This app is for educational purposes only and is not financial advice.
         """)
+
